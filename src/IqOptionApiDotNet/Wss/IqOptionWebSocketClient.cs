@@ -137,11 +137,27 @@ using IqOptionApiDotNet.Ws.Request;
         {
             string requestId;
             WebSocketClient = new WebSocket("wss://iqoption.com/echo/websocket");
+            WebSocketClient.SetProxy("http://proxy.sgi.ms.gov.br:8081",
+                Environment.GetEnvironmentVariable("loginProxy"),
+                Environment.GetEnvironmentVariable("senhaProxy"));
+
             WebSocketClient.OnError += (sender, args) =>
             {
                 _logger.LogError($"WebSocket Error : {args.Message}");
             };
-            
+
+
+            WebSocketClient.OnOpen += (sender, e) =>
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"###Coneção de {Environment.GetEnvironmentVariable("IqOptionUserName")} com o WS feita com sucesso###\n");
+                Console.ResetColor();
+            };
+            WebSocketClient.OnClose += (sender, e) =>
+            {
+                Console.WriteLine("\n###Estamos fechando o WS### Razão: {0} - {1}", e.Reason, e.Code);
+            };
+
             WebSocketClient.Connect();
 
             var scheduler = new EventLoopScheduler();

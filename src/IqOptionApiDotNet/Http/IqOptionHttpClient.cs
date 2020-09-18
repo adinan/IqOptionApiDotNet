@@ -59,6 +59,9 @@ namespace IqOptionApiDotNet.Http
             try
             {
                 var client = new RestClient("https://auth.iqoption.com/api/v1.0/login");
+                client.Proxy = WebRequest.GetSystemWebProxy();
+                client.Proxy.Credentials = CredentialCache.DefaultCredentials;
+
                 var request = new RestRequest(Method.POST) {RequestFormat = DataFormat.Json}
                     .AddHeader("Content-Type", "application/x-www-form-urlencoded")
                     .AddHeader("content-type", "multipart/form-data")
